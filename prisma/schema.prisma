@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id            String   @id // matches Supabase auth.users.id
+  email         String   @unique
+  fullName      String?
+  role          Role     @default(MEMBER)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  assignedTickets Ticket[]
+  activityLogs    ActivityLog[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+model Ticket {
+  id            String   @id @default(cuid())
+  ticketNumber  Int      @unique @default(autoincrement())
+  title         String
+  description   String
+  status        TicketStatus @default(OPEN)
+  priority      Priority @default(MEDIUM)
+  category      TicketCategory @default(GENERAL)
+  assignedToId  String?
+  assignedTo    UserProfile? @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  customerId    String?
+  customerEmail String?
+  customerName  String?
+  createdById   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  resolvedAt    DateTime?
+
+  @@index([assignedToId])
+  @@index([status])
+  @@index([priority])
+  @@index([ticketNumber])
+  @@index([createdAt])
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketCategory {
+  GENERAL
+  TECHNICAL
+  BILLING
+  FEATURE_REQUEST
+  BUG_REPORT
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // "USER_ROLE_CHANGED", "TICKET_CREATED", etc.
+  entityType String?  // "Ticket", "UserProfile", etc.
+  entityId  String?
+  metadata  Json?    // Additional context
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
+}

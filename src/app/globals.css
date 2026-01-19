@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply border-slate-200;
+}
+
+html.dark * {
+  @apply border-slate-700;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Base text colors */
+html {
+  @apply text-slate-900;
+}
+
+html.dark {
+  @apply text-slate-100;
+}
+
+/* Base background colors */
+html {
+  @apply bg-white;
+}
+
+html.dark {
+  @apply bg-slate-950;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  @apply bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  @apply bg-slate-600 rounded-full;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-in-out;
+}
